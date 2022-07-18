@@ -428,7 +428,7 @@ func NewPhysicalBook(New DigitalBook) *PhysicalBook {
 func main() {
 	var s string
 	var lib Library
-	//lib.addNewMember()
+	lib.addNewMember()
 	lib.addNewBook()
 	fmt.Println("Details of PhysicalBook or DigitalBook")
 	fmt.Scanln(&s)
