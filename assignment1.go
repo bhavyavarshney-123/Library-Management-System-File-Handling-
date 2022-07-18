@@ -104,6 +104,7 @@ func (*Library) addNewBook() {
 		fmt.Println("error")
 	}
 }
+//function for returning books
 func (*Library) collected() {
 	//Flag to display Welcome message
 	Welcome := flag.String("returnBooks:", "Book return Section", "specify your book name")
