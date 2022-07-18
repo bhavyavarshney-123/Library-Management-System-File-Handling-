@@ -25,6 +25,7 @@ func (*Library) addNewMember() {
 	fmt.Println("Enter Number of members to input:")
 	fmt.Scanln(&j)
 	i = 0
+	//Enter names of the Members
 	scanner := bufio.NewScanner(os.Stdin)
 	for i < j {
 		fmt.Print("Enter New member name: ")
@@ -84,6 +85,7 @@ func (*Library) addNewBook() {
 	fmt.Scanln(&kind)
 	//checking if there is input or not
 	if len(check) != 0 && len(name) != 0 && len(author) != 0 {
+		//putting all the inputs into a struct
 		Newbook := DigitalBook{
 			Name:   name,
 			Author: author,
@@ -133,6 +135,7 @@ func (*Library) collected() {
 		if err != nil {
 			log.Fatal(err)
 		}
+		//providing response 
 		for key, _ := range user1 {
 			if key == name {
 				fmt.Println("Return Successful")
@@ -159,6 +162,7 @@ func (*Library) collected() {
 		if err != nil {
 			log.Fatal(err)
 		}
+		//providng response
 		for key, _ := range user2 {
 			if key == name {
 				fmt.Println("Return Successful")
@@ -172,10 +176,6 @@ func (*Library) collected() {
 }
 
 // Book an interface type with Certain methods
-// the kind
-//name and author of the book,
-//whether it is a digital or physical book
-// method to set a borrower to it (returns a Boolean)
 type Book interface {
 	Bookdetails()
 	Borrower()
@@ -200,6 +200,7 @@ func (d DigitalBook) Bookdetails() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	//printing the details
 	fmt.Println(user1)
 
 }
@@ -223,6 +224,7 @@ func (p PhysicalBook) Bookdetails() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	//Printing the details
 	fmt.Printf("%+v\n", user2)
 }
 
@@ -261,7 +263,7 @@ func Borrow() bool {
 	var check, bookname, author string
 	var numberofcopies int
 	var kind Booktype
-	fmt.Println("enter Physical or Digital:")
+	fmt.Println("Enter Physicalbook or Digitalbook:")
 	fmt.Scanln(&check)
 	//Enter Book details
 	fmt.Println("Enter Book Name:")
@@ -320,7 +322,7 @@ func Borrow() bool {
 				log.Fatal(err)
 
 			}
-			//comparing the two struct in two maps to check if the required book is available or not
+			//comparing the two struct as values in two maps to check if the required book is available or not
 			i := 0
 			//checking the capacity and availability
 			for i < numberofcopies {
@@ -338,7 +340,9 @@ func Borrow() bool {
 			}
 		}
 		//Storing the member:Book issued
+	        //only stores if the required book matches with the database
 		if bo == true {
+			//for Physicalbook
 			if check == "physicalbook" || check == "Physicalbook" {
 				issue := make(map[string]PhysicalBook)
 				issue[name] = book
@@ -352,6 +356,7 @@ func Borrow() bool {
 					log.Fatalln(err)
 				}
 			}
+			//for Digitalbook
 			if check == "Digitalbook" || check == "digitalbook" {
 				issue := map[string]map[int]PhysicalBook{}
 				j := make(map[int]PhysicalBook)
@@ -425,7 +430,7 @@ func (d DigitalBook) Borrower() {
 	fmt.Println(user2)
 }
 
-// Booktype enum to define a book-type
+// Booktype used in enum to define a book-type
 type Booktype int
 
 //assigning each Booktype a constant value
