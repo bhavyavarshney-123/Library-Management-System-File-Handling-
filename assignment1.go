@@ -95,7 +95,7 @@ func (*Library) addNewBook() {
 		if check == "Digitalbook" || check == "digitalbook" {
 			NewDigitalBook(Newbook)
 		}
-		//checking if a digital book then storing in a Physicalbook.json file
+		//checking if a physucal book then storing in a Physicalbook.json file
 		if check == "physicalbook" || check == "Physicalbook" {
 			NewPhysicalBook(Newbook)
 		}
@@ -139,10 +139,6 @@ func (*Library) collected() {
 }
 
 // Book an interface type with Certain methods
-// the kind
-//name and author of the book,
-//whether it is a digital or physical book
-// method to set a borrower to it (returns a Boolean)
 type Book interface {
 	Bookdetails()
 }
@@ -160,6 +156,7 @@ func (d DigitalBook) Bookdetails() {
 	user1 := map[string]DigitalBook{}
 	//unmarshalling the data and printing the data
 	err = json.Unmarshal(content, &user1)
+	//error check
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -179,6 +176,7 @@ func (p PhysicalBook) Bookdetails() {
 	user2 := PhysicalBook{}
 	//unmarshalling the data and printing the data
 	err = json.Unmarshal(content, &user2)
+	//error check
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -279,7 +277,7 @@ func Borrow() bool {
 				log.Fatal(err)
 
 			}
-			//comparing the two struct in two maps to check if the required book is available or not
+			//comparing the two struct as a value in two maps to check if the required book is available or not
 			i := 0
 			//checking the capacity and availability
 			for i < numberofcopies {
@@ -302,6 +300,7 @@ func Borrow() bool {
 			issue[name] = book
 			//Marshaling the data
 			bytes, err := json.Marshal(issue)
+			//error check
 			if err != nil {
 				log.Fatalln(err)
 			}
@@ -425,7 +424,7 @@ func NewPhysicalBook(New DigitalBook) *PhysicalBook {
 	}
 	return nil
 }
-
+//calling all the functions as per required order
 func main() {
 	var s string
 	var lib Library
