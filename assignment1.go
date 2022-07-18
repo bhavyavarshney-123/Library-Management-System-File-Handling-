@@ -73,7 +73,7 @@ func (*Library) addNewBook() {
 	//check for checking if the book is digitalbook or physicalbook
 	var check, name, author string
 	var kind Booktype
-	fmt.Println("enter Physical or Digital:")
+	fmt.Println("enter Physicalbook or Digitalbook:")
 	fmt.Scanln(&check)
 	//Enter Book details
 	fmt.Println("Enter Book Name:")
@@ -95,7 +95,7 @@ func (*Library) addNewBook() {
 		if check == "Digitalbook" || check == "digitalbook" {
 			NewDigitalBook(Newbook)
 		}
-		//checking if a physucal book then storing in a Physicalbook.json file
+		//checking if a digital book then storing in a Physicalbook.json file
 		if check == "physicalbook" || check == "Physicalbook" {
 			NewPhysicalBook(Newbook)
 		}
@@ -110,42 +110,82 @@ func (*Library) collected() {
 	flag.Parse()
 	fmt.Println(*Welcome)
 	//Asking the name of the member returning book
-	var name string
+	var name, check string
 	fmt.Println("Name of the user:")
 	fmt.Scanln(&name)
-	//reading the file
-	content, err := ioutil.ReadFile("issuedList.json")
-	//checking errors
-	if err != nil {
-		log.Fatal(err)
-	}
-	//storing file data into another variable of similar type
-	user2 := map[string]PhysicalBook{}
-
-	//unmarshalling the data and printing the data
-	err = json.Unmarshal(content, &user2)
-	if err != nil {
-		log.Fatal(err)
-	}
-	for key, _ := range user2 {
-		if key == name {
-			fmt.Println("Return Successful")
-
-		} else {
-			fmt.Println("Return failed")
+	//Asking which type of book to Return
+	fmt.Println("Which book to Return Physical or Digital:")
+	fmt.Scanln(&check)
+	//if PhysicalBook
+	if check == "physicalbook" || check == "Physicalbook" {
+		//reading the file
+		content, err := ioutil.ReadFile("Physical issuedList.json")
+		//checking errors
+		if err != nil {
+			log.Fatal(err)
 		}
+		//storing file data into another variable of similar type
+		user1 := map[string]PhysicalBook{}
 
+		//unmarshalling the data and printing the data
+		err = json.Unmarshal(content, &user1)
+		if err != nil {
+			log.Fatal(err)
+		}
+		for key, _ := range user1 {
+			if key == name {
+				fmt.Println("Return Successful")
+
+			} else {
+				fmt.Println("Return failed")
+			}
+
+		}
+	}
+	//if Digitalbook
+	if check == "Digitalbook" || check == "digitalbook" {
+		//reading the file
+		content, err := ioutil.ReadFile("Digital issuedList.json")
+		//checking errors
+		if err != nil {
+			log.Fatal(err)
+		}
+		//storing file data into another variable of similar type
+		user2 := map[string]map[int]PhysicalBook{}
+
+		//unmarshalling the data and printing the data
+		err = json.Unmarshal(content, &user2)
+		if err != nil {
+			log.Fatal(err)
+		}
+		for key, _ := range user2 {
+			if key == name {
+				fmt.Println("Return Successful")
+
+			} else {
+				fmt.Println("Return failed")
+			}
+
+		}
 	}
 }
 
 // Book an interface type with Certain methods
+// the kind
+//name and author of the book,
+//whether it is a digital or physical book
+// method to set a borrower to it (returns a Boolean)
 type Book interface {
 	Bookdetails()
+	Borrower()
 }
 
 // Bookdetails function to tell about the book details
 // Bookdetails of digitalBooks
 func (d DigitalBook) Bookdetails() {
+	Welcome := flag.String("Borrowbooks:", "Welcome to Bookdetails Section", "specify your book name")
+	flag.Parse()
+	fmt.Println(*Welcome)
 	//reading the file
 	content, err := ioutil.ReadFile("Digitalbook.json")
 	//checking errors
@@ -156,7 +196,6 @@ func (d DigitalBook) Bookdetails() {
 	user1 := map[string]DigitalBook{}
 	//unmarshalling the data and printing the data
 	err = json.Unmarshal(content, &user1)
-	//error check
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -166,6 +205,10 @@ func (d DigitalBook) Bookdetails() {
 
 // Bookdetails of Physicalbooks
 func (p PhysicalBook) Bookdetails() {
+	//Flag to display Welcome message
+	Welcome := flag.String("Borro:", "Welcome to Bookdetails Section", "specify your book name")
+	flag.Parse()
+	fmt.Println(*Welcome)
 	//reading the file
 	content, err := ioutil.ReadFile("Physicalbook.json")
 	//checking errors
@@ -176,7 +219,6 @@ func (p PhysicalBook) Bookdetails() {
 	user2 := PhysicalBook{}
 	//unmarshalling the data and printing the data
 	err = json.Unmarshal(content, &user2)
-	//error check
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -186,13 +228,13 @@ func (p PhysicalBook) Bookdetails() {
 // Borrow functions to borrow book for the library
 func Borrow() bool {
 	//Flag to display Welcome message
-	Welcome := flag.String("Borrowbooks:", "Welcome to Borrow New Book Section", "specify your book name")
+	Welcome := flag.String("Borrow:", "Welcome to Borrow New Book Section", "specify your book name")
 	flag.Parse()
 	fmt.Println(*Welcome)
 	//Name entered by the user to check if user registered or not
 	var name string
 	var bo bool
-	fmt.Println("Please enter your Name")
+	fmt.Println("Please enter your Name:")
 	fmt.Scanln(&name)
 	//Opening the register users File to check the name
 	file, err := os.Open("RegisteredUsers.txt")
@@ -216,6 +258,7 @@ func Borrow() bool {
 
 	//Defining different variables and taking input from the required user
 	var check, bookname, author string
+	var numberofcopies int
 	var kind Booktype
 	fmt.Println("enter Physical or Digital:")
 	fmt.Scanln(&check)
@@ -259,8 +302,7 @@ func Borrow() bool {
 		//if book is digital
 		if check == "Digitalbook" || check == "digitalbook" {
 			//checking for the number of copies required by the user
-			var numberofcopies int
-			fmt.Println("number of copies")
+			fmt.Println("number of copies:")
 			fmt.Scanln(&numberofcopies)
 			//reading the file
 			content, err := ioutil.ReadFile("Digitalbook.json")
@@ -277,7 +319,7 @@ func Borrow() bool {
 				log.Fatal(err)
 
 			}
-			//comparing the two struct as a value in two maps to check if the required book is available or not
+			//comparing the two struct in two maps to check if the required book is available or not
 			i := 0
 			//checking the capacity and availability
 			for i < numberofcopies {
@@ -296,17 +338,34 @@ func Borrow() bool {
 		}
 		//Storing the member:Book issued
 		if bo == true {
-			issue := make(map[string]PhysicalBook)
-			issue[name] = book
-			//Marshaling the data
-			bytes, err := json.Marshal(issue)
-			//error check
-			if err != nil {
-				log.Fatalln(err)
+			if check == "physicalbook" || check == "Physicalbook" {
+				issue := make(map[string]PhysicalBook)
+				issue[name] = book
+				//Marshaling the data
+				bytes, err := json.Marshal(issue)
+				if err != nil {
+					log.Fatalln(err)
+				}
+				//writing data into json file
+				if err = ioutil.WriteFile("Physical issuedList.json", bytes, 0644); err != nil {
+					log.Fatalln(err)
+				}
 			}
-			//writing data into json file
-			if err = ioutil.WriteFile("issuedList.json", bytes, 0644); err != nil {
-				log.Fatalln(err)
+			if check == "Digitalbook" || check == "digitalbook" {
+				issue := map[string]map[int]PhysicalBook{}
+				j := make(map[int]PhysicalBook)
+				j[numberofcopies] = book
+				issue[name] = j
+				//Marshaling the data
+				bytes, err := json.Marshal(issue)
+				if err != nil {
+					log.Fatalln(err)
+				}
+				//writing data into json file
+				if err = ioutil.WriteFile("Digital issuedList.json", bytes, 0644); err != nil {
+					log.Fatalln(err)
+				}
+
 			}
 		}
 	}
@@ -315,19 +374,45 @@ func Borrow() bool {
 }
 
 // Borrower to show the respective borrower and book issued
-func Borrower() {
+//for the physical Book
+func (p PhysicalBook) Borrower() {
 	//Flag to display Welcome message
 	Welcome := flag.String("issued:", "The Following is the member:Book issued", "specify your book name")
 	flag.Parse()
 	fmt.Println(*Welcome)
 	//reading the file
-	content, err := ioutil.ReadFile("issuedList.json")
+	content, err := ioutil.ReadFile("Physical issuedList.json")
 	//checking errors
 	if err != nil {
 		log.Fatal(err)
 	}
 	//storing file data into another variable of similar type
-	user2 := map[string]PhysicalBook{}
+	user1 := map[string]PhysicalBook{}
+
+	//unmarshalling the data and printing the data
+	err = json.Unmarshal(content, &user1)
+	if err != nil {
+		log.Fatal(err)
+
+	}
+	//printing the list
+	fmt.Println(user1)
+}
+
+//for the digital book
+func (d DigitalBook) Borrower() {
+	//Flag to display Welcome message
+	Welcome := flag.String("issued:", "The Following is the member:Book issued", "specify your book name")
+	flag.Parse()
+	fmt.Println(*Welcome)
+	//reading the file
+	content, err := ioutil.ReadFile("Digital issuedList.json")
+	//checking errors
+	if err != nil {
+		log.Fatal(err)
+	}
+	//storing file data into another variable of similar type
+	user2 := map[string]map[int]PhysicalBook{}
 
 	//unmarshalling the data and printing the data
 	err = json.Unmarshal(content, &user2)
@@ -424,23 +509,25 @@ func NewPhysicalBook(New DigitalBook) *PhysicalBook {
 	}
 	return nil
 }
+
 //calling all the functions as per required order
 func main() {
 	var s string
 	var lib Library
 	lib.addNewMember()
 	lib.addNewBook()
-	fmt.Println("Details of PhysicalBook or DigitalBook")
-	fmt.Scanln(&s)
+	Borrow()
 	var b Book
+	fmt.Println("Details of PhysicalBook or DigitalBook:")
+	fmt.Scanln(&s)
 	if s == "physicalbook" || s == "Physicalbook" {
 		b = PhysicalBook{}
 		b.Bookdetails()
+		b.Borrower()
 	} else {
 		b = DigitalBook{}
 		b.Bookdetails()
+		b.Borrower()
 	}
-	Borrow()
-	Borrower()
 	lib.collected()
 }
