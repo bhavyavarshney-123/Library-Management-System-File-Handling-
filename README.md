@@ -1,4 +1,4 @@
-# Library-Managment-System
+# Library-Management-System
 • Only a registered member of the library can borrow books from the library.
 
 • A book may be physical or digital in nature which lends itself to different borrowing constraints which is that physical books can only be borrowed by one member at a time while digital books contain a certain number of copies each of which can be borrowed by a member.
